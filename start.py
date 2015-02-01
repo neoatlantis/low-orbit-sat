@@ -7,7 +7,7 @@ import time
 from datetime import datetime
 
 from tabulate import tabulate
-from pyorbital import orbital, tlefile
+from pyorbital import orbital
 
 # --------------------------------------------------------------------------- #
 satCache = {}
@@ -23,10 +23,10 @@ for each in tleList:
 
 # --------------------------------------------------------------------------- #
 
-OBSERVATOR = (13.757227, 51.049754, 92.0)
+OBSERVATOR = (51.049754, 13.757227, 92.0)
 NOWTIME = datetime.utcnow()
-EMAX_MINIMAL = 10.0 # minimal max-elevation for calculating satellite passes
-PASS_PERIOD = 12 # hours for calculating next passes
+EMAX_MINIMAL = 30.0 # minimal max-elevation for calculating satellite passes
+PASS_PERIOD = 24 # hours for calculating next passes
 
 # --------------------------------------------------------------------------- #
 # calculate all passes of all satellites
@@ -34,34 +34,13 @@ calculated = []
 
 for satName in satCache:
     sat = satCache[satName]
-    passes = sat.get_next_passes(\
-        NOWTIME,
-        24,
-        OBSERVATOR[1],
-        OBSERVATOR[0],
-        OBSERVATOR[2]
-    )
+    passes = sat.get_next_passes(NOWTIME, PASS_PERIOD, *OBSERVATOR)
     for p in passes:
         entry = {}
         rise, fall, emax = p
-        risePos = sat.get_observer_look(\
-            rise,
-            OBSERVATOR[1],
-            OBSERVATOR[0],
-            OBSERVATOR[2]
-        )
-        fallPos = sat.get_observer_look(\
-            fall,
-            OBSERVATOR[1],
-            OBSERVATOR[0],
-            OBSERVATOR[2]
-        )
-        emaxPos = sat.get_observer_look(\
-            emax,
-            OBSERVATOR[1],
-            OBSERVATOR[0],
-            OBSERVATOR[2]
-        )
+        risePos = sat.get_observer_look(rise, *OBSERVATOR)
+        fallPos = sat.get_observer_look(fall, *OBSERVATOR)
+        emaxPos = sat.get_observer_look(emax, *OBSERVATOR)
         if emaxPos[1] < EMAX_MINIMAL:
             continue
 
@@ -111,7 +90,8 @@ for entry in sortedPasses:
 
 print ""
 print "Observer Location: Latitude %10.5f Longitude %10.5f Altitude %10.5f(m)." % OBSERVATOR
-print "Time at calculation: %s UTC" % NOWTIME.strftime('%Y-%m-%d %H:%M:%S.%f')
+print "Time at calculation: %s UTC, predication for %d hours." %\
+    (NOWTIME.strftime('%Y-%m-%d %H:%M:%S.%f'), PASS_PERIOD)
 print tabulate(table, headers=tableHeader)
 print "All times are in UTC."
 print ""
