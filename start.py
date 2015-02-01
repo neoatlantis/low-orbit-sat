@@ -23,7 +23,7 @@ for each in tleList:
 
 # --------------------------------------------------------------------------- #
 
-OBSERVATOR = (13.75, 51.05, 92)
+OBSERVATOR = (13.757227, 51.049754, 92.0)
 NOWTIME = datetime.utcnow()
 EMAX_MINIMAL = 10.0 # minimal max-elevation for calculating satellite passes
 PASS_PERIOD = 12 # hours for calculating next passes
@@ -103,12 +103,15 @@ tableHeader = [\
 ]
 for entry in sortedPasses:
     table.append([\
-        entry['name'],
+        entry['name'].upper(),
         toInstruction(entry['rise']),
         toInstruction(entry['emax']),
         toInstruction(entry['fall'])
     ])
 
 print ""
+print "Observer Location: Latitude %10.5f Longitude %10.5f Altitude %10.5f(m)." % OBSERVATOR
+print "Time at calculation: %s UTC" % NOWTIME.strftime('%Y-%m-%d %H:%M:%S.%f')
 print tabulate(table, headers=tableHeader)
+print "All times are in UTC."
 print ""
