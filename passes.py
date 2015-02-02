@@ -25,8 +25,8 @@ for each in tleList:
 
 OBSERVATOR = (51.049754, 13.757227, 92.0)
 NOWTIME = datetime.utcnow()
-EMAX_MINIMAL = 30.0 # minimal max-elevation for calculating satellite passes
-PASS_PERIOD = 24 # hours for calculating next passes
+EMAX_MINIMAL = 20.0 # minimal max-elevation for calculating satellite passes
+PASS_PERIOD = 24 * 2 # hours for calculating next passes
 
 # --------------------------------------------------------------------------- #
 # calculate all passes of all satellites
