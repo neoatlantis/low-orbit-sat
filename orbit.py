@@ -17,12 +17,13 @@ if len(argv) < 2:
 
 TLE_FILENAME = argv[1]
 CALC_START = datetime.utcnow()
-CALC_PERIOD = 7200
-CALC_RESOLUTION = 10
+CALC_PERIOD = 12 * 3600
+CALC_RESOLUTION = 30
 OBSERVATOR = (51.049754, 13.757227, 92.0)
 
 # --------------------------------------------------------------------------- #
-orbit = orbital.Orbital(os.path.basename(TLE_FILENAME)[0:-4], TLE_FILENAME)
+SATNAME = os.path.basename(TLE_FILENAME)[0:-4]
+orbit = orbital.Orbital(SATNAME, TLE_FILENAME)
 OBSERV_PARAM = (OBSERVATOR[1], OBSERVATOR[0], OBSERVATOR[2])
 
 # --------------------------------------------------------------------------- #
@@ -51,6 +52,7 @@ while nowTimestamp < endTimestamp:
 
 table = []
 tableHeader = [\
+    'NAME',
     'TIME',
     'AZ',
     'ELV',
@@ -60,6 +62,7 @@ tableHeader = [\
 ]
 for each in calculated:
     table.append([\
+        SATNAME.upper(),
         each['time'].strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
         each['observer'][0], # azimuth
         each['observer'][1], # elevation
