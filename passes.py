@@ -25,22 +25,23 @@ for each in tleList:
 
 OBSERVATOR = (51.049754, 13.757227, 92.0)
 NOWTIME = datetime.utcnow()
-EMAX_MINIMAL = 20.0 # minimal max-elevation for calculating satellite passes
-PASS_PERIOD = 24 * 2 # hours for calculating next passes
+EMAX_MINIMAL = 10.0 # minimal max-elevation for calculating satellite passes
+PASS_PERIOD = 24 # hours for calculating next passes
 
 # --------------------------------------------------------------------------- #
 # calculate all passes of all satellites
 calculated = []
 
+OBSERV_PARAM = (OBSERVATOR[1], OBSERVATOR[0], OBSERVATOR[2])
 for satName in satCache:
     sat = satCache[satName]
-    passes = sat.get_next_passes(NOWTIME, PASS_PERIOD, *OBSERVATOR)
+    passes = sat.get_next_passes(NOWTIME, PASS_PERIOD, *OBSERV_PARAM)
     for p in passes:
         entry = {}
         rise, fall, emax = p
-        risePos = sat.get_observer_look(rise, *OBSERVATOR)
-        fallPos = sat.get_observer_look(fall, *OBSERVATOR)
-        emaxPos = sat.get_observer_look(emax, *OBSERVATOR)
+        risePos = sat.get_observer_look(rise, *OBSERV_PARAM)
+        fallPos = sat.get_observer_look(fall, *OBSERV_PARAM)
+        emaxPos = sat.get_observer_look(emax, *OBSERV_PARAM)
         if emaxPos[1] < EMAX_MINIMAL:
             continue
 

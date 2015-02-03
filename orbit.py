@@ -17,12 +17,13 @@ if len(argv) < 2:
 
 TLE_FILENAME = argv[1]
 CALC_START = datetime.utcnow()
-CALC_PERIOD = 120
-CALC_RESOLUTION = 6
+CALC_PERIOD = 7200
+CALC_RESOLUTION = 10
 OBSERVATOR = (51.049754, 13.757227, 92.0)
 
 # --------------------------------------------------------------------------- #
 orbit = orbital.Orbital(os.path.basename(TLE_FILENAME)[0:-4], TLE_FILENAME)
+OBSERV_PARAM = (OBSERVATOR[1], OBSERVATOR[0], OBSERVATOR[2])
 
 # --------------------------------------------------------------------------- #
 # calculate all positions
@@ -36,7 +37,7 @@ nowDatetime = CALC_START
 nowTimestamp = startTimestamp
 while nowTimestamp < endTimestamp:
     coordSpherical = orbit.get_lonlatalt(nowDatetime)
-    coordObserver = orbit.get_observer_look(nowDatetime, *OBSERVATOR)
+    coordObserver = orbit.get_observer_look(nowDatetime, *OBSERV_PARAM)
     calculated.append({
         'spherical': coordSpherical,
         'observer': coordObserver,
@@ -69,6 +70,5 @@ for each in calculated:
 
 print ""
 print "Observer Location: Latitude %10.5f Longitude %10.5f Altitude %10.5f(m)." % OBSERVATOR
-print tabulate(table, headers=tableHeader)
-print "All times are in UTC."
+print tabulate(table, headers=tableHeader, floatfmt="10.5f")
 print ""
